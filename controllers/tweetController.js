@@ -1,4 +1,5 @@
 const tweet = require("../models/tweetSchema");
+const User = require("../models/userSchema");
 const createTweet = async(req, res) => {
     try {
         const { description, id } = req.body;
@@ -72,9 +73,43 @@ const handleLikeOrDislike = async (req, res) => {
     }
 };
 
+const getAllTweets = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const loggedInUser = await User.findById(id);
+        const loggedInUserTweet = await tweet.find({ userId: id })
+        const followingUserTweet = await Promise.all(loggedInUser.following.map((otherUserId) => {
+            return tweet.find({ userId: otherUserId })
+        }))
+        return res.status(200).json({
+            success: true,
+            tweets: loggedInUserTweet.concat(...followingUserTweet)
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const getFollowingTweets = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const loggedInUser = await User.findById(id);
+        const followingUserTweet = await Promise.all(loggedInUser.following.map((otherUserId) => {
+            return tweet.find({ userId: otherUserId })
+        }))
+        return res.status(200).json({
+            success: true,
+            tweets: [].concat(...followingUserTweet)
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
     createTweet,
     deleteTweet,
-    handleLikeOrDislike
+    handleLikeOrDislike,
+    getAllTweets,
+    getFollowingTweets
 };

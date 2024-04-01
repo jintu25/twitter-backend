@@ -201,3 +201,67 @@ exports.otherUsers = async(req, res ) => {
         success: "true"
     })
 }
+
+exports.follow = async (req, res) => {
+    try {
+        // Validate input parameters
+        const loggedInUserId = req.body.id;
+        const userId = req.params.id;
+        if (!loggedInUserId || !userId) {
+            return res.status(400).json({ message: 'Invalid input parameters' });
+        }
+        // Retrieve user information
+        const loggedInUser = await User.findById(loggedInUserId);
+        const user = await User.findById(userId);
+        // Check if the user exists
+        if (!loggedInUser || !user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Check if the user is already being followed
+        if (user.followers.includes(loggedInUserId)) {
+            return res.status(400).json({ message: `${user.name} is already followed by ${loggedInUser.name}` });
+        }
+        // Update the follow relationship
+        await user.updateOne({ $push: { followers: loggedInUserId } });
+        await loggedInUser.updateOne({ $push: { following: userId } });
+        return res.status(200).json({
+            success: true,
+            message: `${loggedInUser.name} just followed ${user.name}`
+        });
+    } catch (error) {
+        console.error('Error in follow action:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.unfollow = async (req, res) => {
+    try {
+        // Validate input parameters
+        const loggedInUserId = req.body.id;
+        const userId = req.params.id;
+        if (!loggedInUserId || !userId) {
+            return res.status(400).json({ message: 'Invalid input parameters' });
+        }
+        // Retrieve user information
+        const loggedInUser = await User.findById(loggedInUserId);
+        const user = await User.findById(userId);
+        // Check if the user exists
+        if (!loggedInUser || !user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Check if the user is not being followed
+        if (!user.followers.includes(loggedInUserId)) {
+            return res.status(400).json({ message: `${user.name} is not followed by ${loggedInUser.name}` });
+        }
+        // Update the follow relationship
+        await user.updateOne({ $pull: { followers: loggedInUserId } });
+        await loggedInUser.updateOne({ $pull: { following: userId } });
+        return res.status(200).json({
+            success: true,
+            message: `${loggedInUser.name} just unfollowed ${user.name}`
+        });
+    } catch (error) {
+        console.error('Error in unfollow action:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
