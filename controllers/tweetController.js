@@ -9,9 +9,11 @@ const createTweet = async(req, res) => {
                 message: "fields are required"
             })
         }
+        const user = await User.findById(id).select("-password")
         await tweet.create({
             description,
-            userId: id
+            userId: id,
+            userDetails: user
         })
         return res.status(201).json({
             success: true,
