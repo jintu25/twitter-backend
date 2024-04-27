@@ -1,45 +1,56 @@
-const express = require("express")
-const PORT = process.env.PORT || 3000
-const app = express()
-const databaseConnection = require("./config/database")
-const cookieParser = require('cookie-parser')
+const express = require("express");
+const PORT = process.env.PORT || 3000;
+const app = express();
+const databaseConnection = require("./config/database");
+const cookieParser = require('cookie-parser');
 const userRoute = require("./routes/userRouter");
-const tweetRoute = require("./routes/tweetRoute")
-const cors = require("cors")
-require('dotenv').config()
+const tweetRoute = require("./routes/tweetRoute");
+const cors = require("cors");
+require('dotenv').config();
 
-
-databaseConnection()
+databaseConnection();
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json())
-app.use(cookieParser())
+app.use(express.json());
+app.use(cookieParser());
+
+// Define allowed origins
+const allowedOrigins = ['http://localhost:5173', 'https://twitter-backend-jade-nine.vercel.app'];
 
 app.use(cors({
-    origin: 'https://twitter-backend-jade-nine.vercel.app',
-    credentials: true,            //access-control-allow-credentials:true
-    optionSuccessStatus: 200      // allow credentials like cookies to be sent with the request
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = "The CORS policy for this site does not allow access from the specified origin.";
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    optionSuccessStatus: 200
 }));
 
-app.use("/api/v1/user", userRoute)
-app.use("/api/v1/tweet", tweetRoute )
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/tweet", tweetRoute);
 
 app.use((err, req, res, next) => {
-    console.log('server error is: ', err)
-    console.error("server error stack: ", err.stack);
+    console.error('Server error: ', err);
     res.status(500).json({
         message: 'Internal server error',
         success: false
     });
 });
-app.get("/hello", (req, res) => {
-    res.send("hello thumi ami 2 jone romance kori...")
-})
-app.get("/", (req, res) => {
-    res.send("server is running")
-})
 
-app.listen(PORT, ()  => {
-    console.log(`server is running on port ${PORT}`)
-})
+app.get("/", (req, res) => {
+    res.send("Server is running");
+});
+
+app.get("/hello", (req, res) => {
+    res.send("Hello, this is hello. Why doesn't it work?");
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
