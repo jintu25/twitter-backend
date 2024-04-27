@@ -17,8 +17,9 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true // allow credentials like cookies to be sent with the request
+    origin: 'https://twitter-backend-jade-nine.vercel.app',
+    credentials: true,            //access-control-allow-credentials:true
+    optionSuccessStatus: 200      // allow credentials like cookies to be sent with the request
 }));
 
 app.use("/api/v1/user", userRoute)
