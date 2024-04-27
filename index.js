@@ -33,7 +33,9 @@ app.use((err, req, res, next) => {
         success: false
     });
 });
-
+app.get("/hello", (req, res) => {
+    res.send("hello thumi ami 2 jone romance kori...")
+})
 app.get("/", (req, res) => {
     res.send("server is running")
 })
