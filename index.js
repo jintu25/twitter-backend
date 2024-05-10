@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Define allowed origins
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const allowedOrigins = ['https://twitter25.netlify.app', 'https://twitter-backend-jade-nine.vercel.app'];
 
 app.use(cors({
     origin: function (origin, callback) {
