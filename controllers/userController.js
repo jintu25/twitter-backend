@@ -266,3 +266,88 @@ exports.unfollow = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+
+// exports.editProfile = async (req, res) => {
+//     try {
+//         const userId = req.body.id; // Assuming you are sending the user ID in the request body
+//         const { name, username, bio, profilePicture } = req.body; // Assuming you are sending updated profile information
+
+//         // Update the user document in the database
+//         await User.findByIdAndUpdate(userId, {
+//             $set: {
+//                 name,
+//                 username,
+//                 bio,
+//                 profilePicture
+//             }
+//         });
+
+//         res.status(200).json({
+//             success: true,
+//             message: 'Profile updated successfully'
+//         });
+//     } catch (error) {
+//         console.error('Error updating profile:', error);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Failed to update profile'
+//         });
+//     }
+// };
+
+// exports.updateUserProfile = asyncHandler(async (req, res) => {
+//     const user = await User.findById(req.user._id);
+
+//     if (user) {
+//         user.name = req.body.name || user.name;
+//         user.username = req.body.username || user.username;
+//         user.pic = req.body.pic || user.pic;
+//         if (req.body.password) {
+//             user.password = req.body.password;
+//         }
+
+//         const updatedUser = await user.save();
+
+//         res.json({
+//             _id: updatedUser._id,
+//             name: updatedUser.name,
+//             email: updatedUser.email,
+//             pic: updatedUser.pic,
+//             isAdmin: updatedUser.isAdmin,
+//             token: generateToken(updatedUser._id),
+//         });
+//     } else {
+//         res.status(404);
+//         throw new Error("User Not Found");
+//     }
+// });
+
+// exports.editProfile = async (req, res) => {
+//     try {
+//         const userId = req.body.id; // Assuming you are getting user ID from authentication middleware
+//         console.log("user is ", userId)
+//         const { name, username, bio, profilePicture } = req.body; // Assuming you are sending updated profile information
+
+//         // Update the user document in the database
+//         await User.findByIdAndUpdate(userId, {
+//             $set: {
+//                 name,
+//                 username,
+//                 bio,
+//                 profilePicture
+//             }
+//         });
+
+//         res.status(200).json({
+//             success: true,
+//             message: 'Profile updated successfully'
+//         });
+//     } catch (error) {
+//         console.error('Error updating profile:', error);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Failed to update profile'
+//         });
+//     }
+// };

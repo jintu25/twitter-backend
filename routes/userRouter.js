@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { logoutUser, loginUser, registerUser, bookmarks, getProfile, otherUsers, follow, unfollow } = require('../controllers/userController');
+const { logoutUser, loginUser, registerUser, bookmarks, getProfile, otherUsers, follow, unfollow, editProfile, updateUserProfile } = require('../controllers/userController');
 const isAuthenticated = require('../config/auth');
 const router = express.Router();
 // const userController = require('../controllers/userController');
@@ -13,5 +13,6 @@ router.get("/profile/:id", isAuthenticated, getProfile);
 router.get("/otheruser/:id", isAuthenticated, otherUsers);
 router.post("/follow/:id", isAuthenticated, follow);
 router.post("/unfollow/:id", isAuthenticated, unfollow);
+// router.put('/edit/:id', updateUserProfile);
 
 module.exports = router;
